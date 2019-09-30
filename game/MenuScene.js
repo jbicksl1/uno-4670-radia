@@ -1,4 +1,8 @@
 export default class MenuScene extends Phaser.Scene {
+    initialize() {
+	Phaser.Scene.call(this, { key: 'MenuScene' });
+    }
+    
     preload() {
 	this.load.image('title_text', '/assets/radia_title_turret_road.png');
 	this.load.image('menu_new_game', '/assets/radia_menu_new_game.png');
@@ -95,6 +99,8 @@ export default class MenuScene extends Phaser.Scene {
 	}
     }
 
-    startNewGame() {}
+    startNewGame() {
+	this.scene.switch('GameScene');
+    }
     showCredits() {}
 }
