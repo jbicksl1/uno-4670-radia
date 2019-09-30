@@ -8,7 +8,8 @@ var phaserGame = new Phaser.Game({
     height: window.innerHeight,
     type: Phaser.WEBGL,
     parent: gameDiv,
-    input: { gamepad: true },
+    physics: Phaser.arcade,
+    input: { gamepad: true }
 });
 
 phaserGame.scene.add('MenuScene', MenuScene);
