@@ -7,24 +7,25 @@ export default class MenuScene extends Phaser.Scene {
     }
     
     create () {
-	this.create_background();
-	this.create_menu();
-	this.create_controller();
+	this.createBackground();
+	this.createMenu();
+	this.createControllerText();
+	this.createInputTimer();
     }
 
-    create_background() {
+    createBackground() {
 	this.cameras.main.setBackgroundColor('rgba(127,127,127,1)');
     }
     
-    create_menu() {
+    createMenu() {
 	this.titleText = this.add.image(this.cameras.main.centerX, 1/8*this.cameras.main.centerY, 'title_text');
 	this.menu = [];
 	this.menu.push(this.add.image(0,0,'menu_new_game'));
 	this.menu.push(this.add.image(0,0,'menu_credits'));
-	this.calculate_menu_positions();
+	this.calculateMenuPositions();
     }
     
-    calculate_menu_positions() {
+    calculateMenuPositions() {
 	let menuHeight = _.reduce(this.menu, (accum, menuItem) => accum + menuItem.height, 0);
 	let menuCenterX = this.cameras.main.centerX;
 	let menuCenterY = this.cameras.main.centerY;
@@ -36,13 +37,64 @@ export default class MenuScene extends Phaser.Scene {
 	}
     }
 
-    create_controller() {
-	this.controllerText = this.add.image(this.cameras.main.centerX, 15/16*this.cameras.main.centerY, 'controller_text');
-	this.input.gamepad.once('connected', function (pad) {
-	    this.pad = pad;
-	    this.controllerText.destroy();
-	});
+    createControllerText() {
+	this.controllerText = this.add.image(this.cameras.main.centerX, 15/8*this.cameras.main.centerY, 'controller_text');
+	this.input.gamepad.once('connected', (pad) => {});
     }
-    
-    update () {}
+
+    createInputTimer() {
+	this.lastInputTime = this.time.now;
+    }
+
+    update () {
+	this.updateControllerConnected();
+	this.updateMenuItemSelected();
+    }
+
+    updateControllerConnected() {
+	let pads = this.input.gamepad.gamepads;
+	if(pads.length == 0 && !this.controllerText) {
+	    this.createControllerText();
+	} else {
+	    if(pads.length > 0) {
+		if(this.controllerText) {
+		    this.controllerText.destroy();
+		    this.controllerText = null;
+		    this.selectedMenuItem = 0;
+		}
+	    }
+	}
+    }
+
+    updateMenuItemSelected() {
+	let pads = this.input.gamepad.gamepads;
+	if(this.time.now - this.lastInputTime < 0 || this.time.now - this.lastInputTime > 500) {
+	    if(pads.length > 0) {
+		if(pads[0].axes[1].getValue() > 0) {
+		    this.menu[this.selectedMenuItem].clearTint();
+		    this.selectedMenuItem = (this.selectedMenuItem + 1) % this.menu.length;
+		    this.menu[this.selectedMenuItem].setTintFill();
+		    this.lastInputTime = this.time.now;
+		} else if (pads[0].axes[1].getValue() < 0) {
+		    this.menu[this.selectedMenuItem].clearTint();
+		    this.selectedMenuItem = (this.selectedMenuItem - 1 + this.menu.length) % this.menu.length;
+		    this.menu[this.selectedMenuItem].setTintFill();
+		    this.lastInputTime = this.time.now;
+		} else if (pads[0].buttons[0].pressed) {
+		    this.selectMenuItem();
+		}
+	    }
+	}
+    }
+
+    selectMenuItem() {
+	if(this.selectedMenuItem == 0) {
+	    this.startNewGame();
+	} else {
+	    this.showCredits();
+	}
+    }
+
+    startNewGame() {}
+    showCredits() {}
 }
