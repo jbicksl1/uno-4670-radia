@@ -8,6 +8,8 @@ export default class PlayerObject extends Phaser.Physics.Arcade.Sprite {
 	this.hue = hue;
 	
 	this.controlStrategy = controlStrategy;
+
+	this.lastThrustTime = this.scene.time.now;
 	
 	this.constructEmitter(scene);
     }
@@ -66,5 +68,13 @@ export default class PlayerObject extends Phaser.Physics.Arcade.Sprite {
 
     calculateBaseAcceleration() {
 	return new Phaser.Math.Vector2(0,0);
+    }
+
+    thrust(vector) {
+	if(this.scene.time.now - this.lastThrustTime > 1000) {
+	    var thrustVector = vector.normalize().scale(200);
+	    this.body.setVelocity(thrustVector.x, thrustVector.y);
+	    this.lastThrustTime = this.scene.time.now;
+	}
     }
 }

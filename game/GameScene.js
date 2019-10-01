@@ -10,13 +10,19 @@ export default class GameScene extends Phaser.Scene {
     }
 
     create() {
+	this.time.timeScale = 0.5;
+	
 	this.particles = this.add.particles('pellet');
 	this.controllerConnected = [false, false, false, false];
+
 	this.colors = [];
 	this.colors.push(Phaser.Math.FloatBetween(0.0, 1.0));
 	this.colors.push((this.colors[0]+0.5) % 1.0);
 	this.colors.push((this.colors[0]+0.25) % 1.0);
 	this.colors.push((this.colors[0]+0.75) % 1.0);
+
+	this.radii = [];
+	this.radii.push(new RadiusObject(this, 1000));
     }
 
     createPlayerAndController(playerNumber) {
