@@ -11,19 +11,32 @@ export default class GameScene extends Phaser.Scene {
 
     create() {
 	this.particles = this.add.particles('pellet');
-	console.log(this.input.gamepad.gamepads);
-	_.map(this.input.gamepad.gamepads, (pad) => this.createPlayerAndController(pad));
-	this.input.gamepad.once('connected', (pad) => this.createPlayerAndController(pad));
+	this.controllerConnected = [false, false, false, false];
+	this.colors = [];
+	this.colors.push(Phaser.Math.FloatBetween(0.0, 1.0));
+	this.colors.push((this.colors[0]+0.5) % 1.0);
+	this.colors.push((this.colors[0]+0.25) % 1.0);
+	this.colors.push((this.colors[0]+0.75) % 1.0);
     }
 
-    createPlayerAndController(pad) {
+    createPlayerAndController(playerNumber) {
+	var pad = this.input.gamepad.gamepads[playerNumber];
 	var playerController = new GamepadPlayerController(pad);
-	var player = this.spawnPlayer(playerController);
+	var player = this.spawnPlayer(playerNumber, playerController);
     }
 
-    spawnPlayer(controller) {
-	var player = new PlayerObject(this, this.cameras.main.centerX, this.cameras.main.centerY, Phaser.Math.FloatBetween(0.0, 1.0), controller);
-	controller.registerPlayer(player);
-	console.log(player.hue);
+    spawnPlayer(playerNumber, playerController) {
+	var player = new PlayerObject(this, this.cameras.main.centerX, this.cameras.main.centerY, this.colors[playerNumber], playerController);
+	playerController.registerPlayer(player);
+    }
+
+    update() {
+	_.forEach(this.controllerConnected, (connected, player) => {
+	    if(!connected && this.input.gamepad.gamepads[player]) {
+		this.createPlayerAndController(player);
+		this.controllerConnected[player] = true;
+	    }
+	});
+	
     }
 }
