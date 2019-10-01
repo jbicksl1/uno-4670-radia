@@ -21,6 +21,7 @@ export default class GameScene extends Phaser.Scene {
 	this.colors.push((this.colors[0]+0.25) % 1.0);
 	this.colors.push((this.colors[0]+0.75) % 1.0);
 
+	this.players = [ null, null, null, null ];
 	this.radii = [];
 	this.radii.push(new RadiusObject(this, 1000));
     }
@@ -34,6 +35,7 @@ export default class GameScene extends Phaser.Scene {
     spawnPlayer(playerNumber, playerController) {
 	var player = new PlayerObject(this, this.cameras.main.centerX, this.cameras.main.centerY, this.colors[playerNumber], playerController);
 	playerController.registerPlayer(player);
+	this.players[playerNumber] = player;
     }
 
     update() {
@@ -44,5 +46,12 @@ export default class GameScene extends Phaser.Scene {
 	    }
 	});
 	
+    }
+
+    respawn(playerNumber) {
+	var controller = this.players[playerNumber].controlStrategy;
+	this.players[playerNumber].emitter.explode(30);
+	this.players[playerNumber].destroy();
+	this.spawnPlayer(playerNumber, controller);
     }
 }
