@@ -2,6 +2,7 @@ export default class MenuScene extends Phaser.Scene {
     preload() {
 	this.load.image('title_text', '/assets/radia_title_turret_road.png');
 	this.load.image('menu_new_game', '/assets/radia_menu_new_game.png');
+	this.load.image('menu_settings', '/assets/radia_menu_settings.png');
 	this.load.image('menu_credits', '/assets/radia_menu_credits.png');
 	this.load.image('controller_text', '/assets/radia_please_connect_controller.png');
     }
@@ -21,6 +22,7 @@ export default class MenuScene extends Phaser.Scene {
 	this.titleText = this.add.image(this.cameras.main.centerX, 1/8*this.cameras.main.centerY, 'title_text');
 	this.menu = [];
 	this.menu.push(this.add.image(0,0,'menu_new_game'));
+	this.menu.push(this.add.image(0,0,'menu_settings'));
 	this.menu.push(this.add.image(0,0,'menu_credits'));
 	this.calculateMenuPositions();
     }
@@ -90,14 +92,19 @@ export default class MenuScene extends Phaser.Scene {
     selectMenuItem() {
 	if(this.selectedMenuItem == 0) {
 	    this.startNewGame();
+	} else if(this.selectedMenuItem == 1) {
+	    this.showSettings();
 	} else {
 	    this.showCredits();
 	}
     }
 
     startNewGame() {
-	this.input.gamepad.enabled = false;
 	this.scene.switch('GameScene');
+    }
+
+    showSettings() {
+	this.scene.switch('SettingsScene');
     }
     
     showCredits() {}
