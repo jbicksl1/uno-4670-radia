@@ -105,9 +105,9 @@ export default class SettingsScene extends Phaser.Scene {
 			this.axisActivateTimes[x] = this.time.now;
 		    } else if(this.time.now - this.axisActivateTimes[x] > 1000) {
 			if(axis < 0) {
-			    this.northAccelAxis = -x;
+			    this.northAccelAxis = -x-1;
 			} else {
-			    this.northAccelAxis = x;
+			    this.northAccelAxis = x+1;
 			}
 			next = true;
 		    }
@@ -173,9 +173,9 @@ export default class SettingsScene extends Phaser.Scene {
 			this.axisActivateTimes[x] = this.time.now;
 		    } else if(this.time.now - this.axisActivateTimes[x] > 1000) {
 			if(axis < 0) {
-			    this.northJumpAxis = -x;
+			    this.northJumpAxis = -x-1;
 			} else {
-			    this.northJumpAxis = x;
+			    this.northJumpAxis = x+1;
 			}
 			next = true;
 		    }
@@ -229,7 +229,7 @@ export default class SettingsScene extends Phaser.Scene {
 	this.configureSequence = this.awaitJumpButtonChoice;
     }
 
-    awaitJumpChoice() {
+    awaitJumpButtonChoice() {
 	var next = false;
 	var buttonTotal = this.padToConfigure.getButtonTotal();
 	for(var x = 0; x < buttonTotal; x++) {
@@ -239,7 +239,7 @@ export default class SettingsScene extends Phaser.Scene {
 		    if(!this.activeButtons[x]) {
 			this.activeButtons[x] = true;
 			this.buttonActivateTimes[x] = this.time.now;
-		    } else if(this.time.now - this.axisActivateTimes[x] > 1000) {
+		    } else if(this.time.now - this.buttonActivateTimes[x] > 1000) {
 			this.jumpButton = x;
 			next = true;
 		    }
@@ -275,17 +275,17 @@ export default class SettingsScene extends Phaser.Scene {
 	var next = false;
 	var axisTotal = this.padToConfigure.getAxisTotal();
 	for(var x = 0; x < axisTotal; x++) {
-	    if(x != this.turnAxis && -x != this.turnAxis) {
+	    if(x != this.turnAxis-1 && x != -this.turnAxis-1) {
 		var axis = this.padToConfigure.getAxisValue(x);
 		if(axis != 0) {
 		    if(!this.preActiveAxes[x]) {
 			if(axis < 0) {
-			    this.storeTurn(this.turnAxis, -x);
-			    this.turnAxis2 = -x;
+			    this.storeTurn(this.turnAxis, -x-1);
+			    this.turnAxis2 = -x-1;
 			    next = true;
 			} else {
-			    this.storeTurn(this.turnAxis, x);
-			    this.turnAxis2 = x;
+			    this.storeTurn(this.turnAxis, x+1);
+			    this.turnAxis2 = x+1;
 			    next = true;
 			}
 		    }
@@ -313,13 +313,13 @@ export default class SettingsScene extends Phaser.Scene {
 	var next = false;
 	var axisTotal = this.padToConfigure.getAxisTotal();
 	for(var x = 0; x < axisTotal; x++) {
-	    if(x != this.turnAxis2 && -x != this.turnAxis2) {
+	    if(x != this.turnAxis2-1 && x != -this.turnAxis2-1) {
 		var axis = this.padToConfigure.getAxisValue(x);
 		if(axis != 0) {
 		    if(!this.preActiveAxes[x]) {
-			if(x == this.turnAxis2 && axis < 0) {
+			if(x == this.turnAxis-1 && axis < 0) {
 			    this.next = true;
-			} else if(x == -this.turnAxis2 && axis > 0) {
+			} else if(x == -this.turnAxis-1 && axis > 0) {
 			    this.next = true;
 			} else {
 			    this.failTurn();
@@ -349,13 +349,13 @@ export default class SettingsScene extends Phaser.Scene {
 	var next = false;
 	var axisTotal = this.padToConfigure.getAxisTotal();
 	for(var x = 0; x < axisTotal; x++) {
-	    if(x != this.turnAxis && -x != this.turnAxis) {
+	    if(x != this.turnAxis-1 && x != -this.turnAxis-1) {
 		var axis = this.padToConfigure.getAxisValue(x);
 		if(axis != 0) {
 		    if(!this.preActiveAxes[x]) {
-			if(x == this.turnAxis && axis < 0) {
+			if(x == this.turnAxis2-1 && axis < 0) {
 			    this.next = true;
-			} else if(x == -this.turnAxis && axis > 0) {
+			} else if(x == -this.turnAxis2-1 && axis > 0) {
 			    this.next = true;
 			} else {
 			    this.failTurn();
