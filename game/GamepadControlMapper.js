@@ -1,10 +1,4 @@
 let gamepadControlMappers;
-export default gamepadControlMappers = [
-    new GamepadControlMapper(),
-    new GamepadControlMapper(),
-    new GamepadControlMapper(),
-    new GamepadControlMapper()
-];
 
 class GamepadControlMapper {
     handling(gamepad) {
@@ -13,11 +7,11 @@ class GamepadControlMapper {
     }
 
     accelX() {
-	return this.gamepad.getAxisValue(1);
+	return this.gamepad.getAxisValue(0);
     }
 
     accelY() {
-	return this.gamepad.getAxisValue(0);
+	return this.gamepad.getAxisValue(1);
     }
     
     jumpX() {
@@ -74,3 +68,10 @@ class GamepadControlMapper {
 	};
     }
 }
+
+export default gamepadControlMappers = [
+    new GamepadControlMapper(),
+    new GamepadControlMapper(),
+    new GamepadControlMapper(),
+    new GamepadControlMapper()
+];

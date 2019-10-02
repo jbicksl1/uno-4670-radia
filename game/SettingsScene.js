@@ -2,14 +2,15 @@ import gamepadControlMappers from '/game/GamepadControlMapper.js';
 
 export default class SettingsScene extends Phaser.Scene {
     preload() {
-	this.load.image('/assets/radia_settings_choose_controller.png', 'choose_controller');
-	this.load.image('/assets/radia_settings_choose_accel.png', 'choose_accel');
-	this.load.image('/assets/radia_settings_choose_aim.png', 'choose_aim');
-	this.load.image('/assets/radia_settings_choose_jump.png', 'choose_jump');
-	this.load.image('/assets/radia_settings_turn_clockwise.png', 'turn_clockwise');
+	this.load.image('choose_controller', '/assets/radia_settings_choose_controller.png');
+	this.load.image('choose_accel', '/assets/radia_settings_choose_accel.png');
+	this.load.image('choose_aim', '/assets/radia_settings_choose_aim.png');
+	this.load.image('choose_jump', '/assets/radia_settings_choose_jump.png');
+	this.load.image('turn_clockwise', '/assets/radia_settings_turn_clockwise.png');
     }
 
     create() {
+	this.cameras.main.setBackgroundColor('rgba(127,127,127,1)');
 	this.configureSequence = this.chooseController;
     }
 
@@ -21,7 +22,7 @@ export default class SettingsScene extends Phaser.Scene {
 	this.message = this.add.image(this.cameras.main.centerX, this.cameras.main.centerY, 'choose_controller');
 	this.preActivePads = [ false, false, false, false ];
 	for(var x = 0; x < 4; x++) {
-	    var pad = this.gamepad.getPad(x);
+	    var pad = this.input.gamepad.getPad(x);
 	    if(pad) {
 		var buttonTotal = pad.getButtonTotal();
 		for(var y = 0; y < buttonTotal; y++) {
@@ -39,7 +40,7 @@ export default class SettingsScene extends Phaser.Scene {
     awaitControllerChoice() {
 	var next = false;
 	for(var x = 0; x < 4; x++) {
-	    var pad = this.gamepad.getPad(x);
+	    var pad = this.input.gamepad.getPad(x);
 	    if(pad) {
 		var buttonTotal = pad.getButtonTotal();
 		var isActive = false;
@@ -253,12 +254,20 @@ export default class SettingsScene extends Phaser.Scene {
 	}
 	if(next) {
 	    this.message.destroy();
-	    this.configureSequence = this.reconstructControllerConfig();
+	    this.configureSequence = this.awaitButtonReleased;
+	}
+    }
+
+    awaitButtonReleased() {
+	if(!this.padToConfigure.getButtonValue(this.jumpButton)) {
+	    this.configureSequence = this.reconstructControllerConfig;
 	}
     }
 
     reconstructControllerConfig() {
-	gamepadControlMappers[this.padNumber].rebind(-this.northAccelAxis, this.eastAccelAxis, -this.northJumpAxis, this.eastJumpAxis, this.jumpButton);
+	gamepadControlMappers[this.padNumber].rebind(this.eastAccelAxis, -this.northAccelAxis, this.eastJumpAxis, -this.northJumpAxis, this.jumpButton);
+	this.configureSequence = this.chooseController;
+	this.scene.switch('MenuScene');
     }
 
     turnClockwiseNE() {
@@ -297,7 +306,7 @@ export default class SettingsScene extends Phaser.Scene {
 	    }
 	}
 	if(next) {
-	    this.configSequence = this.turnClockwiseES;
+	    this.configureSequence = this.turnClockwiseES;
 	}
     }
 
@@ -320,9 +329,9 @@ export default class SettingsScene extends Phaser.Scene {
 		if(axis != 0) {
 		    if(!this.preActiveAxes[x]) {
 			if(x == this.turnAxis-1 && axis < 0) {
-			    this.next = true;
+			    next = true;
 			} else if(x == -this.turnAxis-1 && axis > 0) {
-			    this.next = true;
+			    next = true;
 			} else {
 			    this.failTurn();
 			}
@@ -333,7 +342,7 @@ export default class SettingsScene extends Phaser.Scene {
 	    }
 	}
 	if(next) {
-	    this.configSequence = this.turnClockwiseSW;
+	    this.configureSequence = this.turnClockwiseSW;
 	}
     }
     
@@ -356,9 +365,9 @@ export default class SettingsScene extends Phaser.Scene {
 		if(axis != 0) {
 		    if(!this.preActiveAxes[x]) {
 			if(x == this.turnAxis2-1 && axis < 0) {
-			    this.next = true;
+			    next = true;
 			} else if(x == -this.turnAxis2-1 && axis > 0) {
-			    this.next = true;
+			    next = true;
 			} else {
 			    this.failTurn();
 			}

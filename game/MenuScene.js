@@ -1,3 +1,5 @@
+import gamepadControlMappers from '/game/GamepadControlMapper.js';
+
 export default class MenuScene extends Phaser.Scene {
     preload() {
 	this.load.image('title_text', '/assets/radia_title_turret_road.png');
@@ -72,17 +74,18 @@ export default class MenuScene extends Phaser.Scene {
 	let pads = this.input.gamepad.gamepads;
 	if(this.time.now - this.lastInputTime < 0 || this.time.now - this.lastInputTime > 500) {
 	    if(pads.length > 0) {
-		if(pads[0].axes[1].getValue() > 0) {
+		let pad = gamepadControlMappers[0].handling(pads[0]);
+		if(pad.accelY() > 0) {
 		    this.menu[this.selectedMenuItem].clearTint();
 		    this.selectedMenuItem = (this.selectedMenuItem + 1) % this.menu.length;
 		    this.menu[this.selectedMenuItem].setTintFill();
 		    this.lastInputTime = this.time.now;
-		} else if (pads[0].axes[1].getValue() < 0) {
+		} else if (pad.accelY() < 0) {
 		    this.menu[this.selectedMenuItem].clearTint();
 		    this.selectedMenuItem = (this.selectedMenuItem - 1 + this.menu.length) % this.menu.length;
 		    this.menu[this.selectedMenuItem].setTintFill();
 		    this.lastInputTime = this.time.now;
-		} else if (pads[0].buttons[0].pressed) {
+		} else if (pad.jumpButton()) {
 		    this.selectMenuItem();
 		}
 	    }

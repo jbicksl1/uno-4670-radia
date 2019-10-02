@@ -1,6 +1,7 @@
 import PlayerObject from '/game/PlayerObject.js';
-import GamepadPlayerController from '/game/GamepadPlayerController.js';
 import RadiusObject from '/game/RadiusObject.js';
+import GamepadPlayerController from '/game/GamepadPlayerController.js';
+import gamepadControlMappers from '/game/GamepadControlMapper.js';
 
 export default class GameScene extends Phaser.Scene {
     preload() {
@@ -27,7 +28,7 @@ export default class GameScene extends Phaser.Scene {
     }
 
     createPlayerAndController(playerNumber) {
-	var pad = this.input.gamepad.gamepads[playerNumber];
+	var pad = gamepadControlMappers[playerNumber].handling(this.input.gamepad.gamepads[playerNumber]);
 	var playerController = new GamepadPlayerController(pad);
 	var player = this.spawnPlayer(playerNumber, playerController);
     }
