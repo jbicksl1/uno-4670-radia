@@ -8,11 +8,11 @@ export default class SettingsScene extends Phaser.Scene {
     }
 
     create() {
-	this.configureSequence = [ this.chooseJump, this.chooseAccelerate, this.chooseController ];
+	this.configureSequence = this.chooseController;
     }
 
     update() {
-	(this.configureSequence.pop())();
+	this.configureSequence();
     }
 
     chooseController() {
@@ -31,7 +31,7 @@ export default class SettingsScene extends Phaser.Scene {
 	}
 	this.activePads = [ false, false, false, false ];
 	this.padActivateTimes = [ this.time.now, this.time.now, this.time.now, this.time.now ];
-	this.configureSequence.push(this.awaitControllerChoice);
+	this.configureSequence = this.awaitControllerChoice;
     }
 
     awaitControllerChoice() {
@@ -63,9 +63,7 @@ export default class SettingsScene extends Phaser.Scene {
 	}
 	if(next) {
 	    this.message.destroy();
-	    this.configureSequence.push(this.chooseAccelerate);
-	} else {
-	    this.configureSequence.push(this.awaitControllerChoice);
+	    this.configureSequence = this.chooseAccelerate;
 	}
     }
 
@@ -87,8 +85,96 @@ export default class SettingsScene extends Phaser.Scene {
 	}
 
 	this.axisActivateTimes = [ this.time.now, this.time.now, this.time.now, this.time.now ];
+	this.configureSequence = this.awaitAccelerateChoice;
+    }
+    
+    awaitAccelerateChoice() {
+	var next = false;
+	var axisTotal = this.padToConfigure.getAxisTotal();
+	for(var x = 0; x < axisTotal; x++) {
+	    var axis = this.padToConfigure.getAxisValue(x);
+	    if(axis != 0) {
+		if(!this.preActiveAxes[x]) {
+		    if(!this.activeAxes[x]) {
+			this.activeAxes[x] = true;
+			this.axisActivateTimes[x] = this.time.now;
+		    } else if(this.time.now - this.axisActivateTimes[x] > 1000) {
+			if(axis < 0) {
+			    this.northAccelAxis = -x;
+			} else {
+			    this.northAccelAxis = x;
+			}
+			next = true;
+		    }
+		}
+	    } else {
+		this.activeAxes[x] = false;
+		this.preActiveAxes[x] = false;
+	    }
+	}
+	if(next) {
+	    this.message.destroy();
+	    this.configureSequence = this.turnClockwiseNE;
+	    this.turnAxis = this.northAccelAxis;
+	    this.storeTurn = (north, east) => {
+		this.northAccelAxis = north;
+		this.eastAccelAxis = east;
+	    };
+	    this.failTurn = () => {
+		this.message.destroy();
+		this.configSequence = this.chooseAccelerate;
+	    };
+	    this.succeedTurn = () => {
+		this.message.destroy();
+		this.configSequence = this.chooseJump;
+	    };
+	}
     }
 
     chooseJump() {
+	this.message = this.add.image(this.cameras.main.centerX, this.cameras.main.centerY, 'choose_aim');
+    }
+    
+    turnClockwiseNE() {
+	this.message = this.add.image(this.cameras.main.centerX, this.cameras.main.centerY, 'turn_clockwise');
+	
+	this.preActiveAxes = [];
+	var axisTotal = this.padToConfigure.getAxisTotal();
+	for(var x = 0; x < axisTotal; x++) {
+	    this.preActiveAxes.push(this.padToConfigure.getAxisValue(x) != 0);
+	}
+	
+	this.configureSequence = this.awaitClockwiseNE;
+    }
+
+    awaitClockwiseNE() {
+	var next = false;
+	var axisTotal = this.padToConfigure.getAxisTotal();
+	for(var x = 0; x < axisTotal; x++) {
+	    if(x != this.turnAxis && -x != this.turnAxis) {
+		var axis = this.padToConfigure.getAxisValue(x);
+		if(axis != 0) {
+		    if(!this.preActiveAxes[x]) {
+			if(axis < 0) {
+			    this.storeTurn(this.turnAxis, -x);
+			    this.turnAxis = -x;
+			    next = true;
+			} else {
+			    this.storeTurn(this.turnAxis, x);
+			    this.turnAxis = x;
+			    next = true;
+			}
+		    }
+		} else {
+		    this.preActiveAxes[x] = 0;
+		}
+	    }
+	}
+	if(next) {
+	    this.configSequence = this.turnClockwiseES;
+	}
+    }
+
+    turnClockwiseES() {
     }
 }
