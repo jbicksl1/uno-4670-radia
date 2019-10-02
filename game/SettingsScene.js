@@ -1,3 +1,5 @@
+import gamepadControlMappers from '/game/GamepadControlMapper.js';
+
 export default class SettingsScene extends Phaser.Scene {
     preload() {
 	this.load.image('/assets/radia_settings_choose_controller.png', 'choose_controller');
@@ -256,7 +258,7 @@ export default class SettingsScene extends Phaser.Scene {
     }
 
     reconstructControllerConfig() {
-	
+	gamepadControlMappers[this.padNumber].rebind(-this.northAccelAxis, this.eastAccelAxis, -this.northJumpAxis, this.eastJumpAxis, this.jumpButton);
     }
 
     turnClockwiseNE() {
