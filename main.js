@@ -1,6 +1,6 @@
-import MenuScene from '/game/MenuScene.js';
-import GameScene from '/game/GameScene.js';
-import SettingsScene from '/game/SettingsScene.js';
+import MenuScene from './game/MenuScene.js';
+import GameScene from './game/GameScene.js';
+import SettingsScene from './game/SettingsScene.js';
 
 var gameDiv = document.getElementById('gameDiv');
 

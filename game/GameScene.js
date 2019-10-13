@@ -1,7 +1,7 @@
-import PlayerObject from '/game/PlayerObject.js';
-import RadiusObject from '/game/RadiusObject.js';
-import GamepadPlayerController from '/game/GamepadPlayerController.js';
-import gamepadControlMappers from '/game/GamepadControlMapper.js';
+import PlayerObject from './game/PlayerObject.js';
+import RadiusObject from './game/RadiusObject.js';
+import GamepadPlayerController from './game/GamepadPlayerController.js';
+import gamepadControlMappers from './game/GamepadControlMapper.js';
 
 export default class GameScene extends Phaser.Scene {
     preload() {
