@@ -2,12 +2,12 @@ import gamepadControlMappers from './GamepadControlMapper.js';
 
 export default class SettingsScene extends Phaser.Scene {
     preload() {
-	this.load.image('choose_controller', '../assets/radia_settings_choose_controller.png');
-	this.load.image('choose_accel', '../assets/radia_settings_choose_accel.png');
-	this.load.image('choose_aim', '../assets/radia_settings_choose_aim.png');
-	this.load.image('choose_jump', '../assets/radia_settings_choose_jump.png');
-	this.load.image('choose_back', '../assets/radia_settings_choose_back.png');
-	this.load.image('turn_clockwise', '../assets/radia_settings_turn_clockwise.png');
+	this.load.image('choose_controller', './assets/radia_settings_choose_controller.png');
+	this.load.image('choose_accel', './assets/radia_settings_choose_accel.png');
+	this.load.image('choose_aim', './assets/radia_settings_choose_aim.png');
+	this.load.image('choose_jump', './assets/radia_settings_choose_jump.png');
+	this.load.image('choose_back', './assets/radia_settings_choose_back.png');
+	this.load.image('turn_clockwise', './assets/radia_settings_turn_clockwise.png');
     }
 
     create() {

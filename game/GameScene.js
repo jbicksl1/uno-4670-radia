@@ -5,10 +5,10 @@ import gamepadControlMappers from './GamepadControlMapper.js';
 
 export default class GameScene extends Phaser.Scene {
     preload() {
-	this.load.image('player', '../assets/radia_player.png');
-	this.load.image('pellet', '../assets/radia_pellet.png');
-	this.load.image('radius', '../assets/radia_radius.png');
-	this.load.image('eliminated', '../assets/radia_eliminated.png');
+	this.load.image('player', './assets/radia_player.png');
+	this.load.image('pellet', './assets/radia_pellet.png');
+	this.load.image('radius', './assets/radia_radius.png');
+	this.load.image('eliminated', './assets/radia_eliminated.png');
     }
 
     create() {
