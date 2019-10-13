@@ -1,5 +1,5 @@
 export default class PlayerObject extends Phaser.Physics.Arcade.Sprite {
-    constructor(scene, x, y, hue, controlStrategy) {
+    constructor(scene, x, y, hue, controlStrategy, playerNumber) {
 	super(scene, x, y, 'player');
 	scene.add.existing(this);
 	scene.physics.add.existing(this);
@@ -12,6 +12,20 @@ export default class PlayerObject extends Phaser.Physics.Arcade.Sprite {
 	this.lastThrustTime = this.scene.time.now;
 	
 	this.constructEmitter(scene);
+
+	if(playerNumber == 0) {
+	    this.setPosition(x, y-200);
+	    this.body.setVelocityX(50);
+	} else if(playerNumber == 1) {
+	    this.setPosition(x, y+200);
+	    this.body.setVelocityX(-50);
+	} else if(playerNumber == 2) {
+	    this.setPosition(x+200, y);
+	    this.body.setVelocityY(50);
+	} else if(playerNumber == 3) {
+	    this.setPosition(x-200, y);
+	    this.body.setVelocityY(-50);
+	}
     }
 
     constructEmitter(scene) {
@@ -67,7 +81,11 @@ export default class PlayerObject extends Phaser.Physics.Arcade.Sprite {
     }
 
     calculateBaseAcceleration() {
-	return new Phaser.Math.Vector2(0,0);
+	if(this.dx && this.dy && this.rSq) {
+	    return new Phaser.Math.Vector2(-this.dx/this.rSq*2000, -this.dy/this.rSq*2000);
+	} else {
+	    return new Phaser.Math.Vector2(0,0);
+	}
     }
 
     thrust(vector) {

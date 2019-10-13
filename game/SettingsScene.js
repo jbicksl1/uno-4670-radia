@@ -6,6 +6,7 @@ export default class SettingsScene extends Phaser.Scene {
 	this.load.image('choose_accel', '/assets/radia_settings_choose_accel.png');
 	this.load.image('choose_aim', '/assets/radia_settings_choose_aim.png');
 	this.load.image('choose_jump', '/assets/radia_settings_choose_jump.png');
+	this.load.image('choose_back', '/assets/radia_settings_choose_back.png');
 	this.load.image('turn_clockwise', '/assets/radia_settings_turn_clockwise.png');
     }
 
@@ -15,7 +16,18 @@ export default class SettingsScene extends Phaser.Scene {
     }
 
     update() {
+	if(this.configureSequence != this.chooseBackButton && this.configureSequence != this.awaitBackButtonChoice && this.configureSequence != this.awaitButtonReleased) {
+	    this.testBackOut();
+	}
 	this.configureSequence();
+    }
+
+    testBackOut() {
+	var controller = gamepadControlMappers[0].handling(this.input.gamepad.getPad(0));
+	if(controller.backButton()) {
+	    this.configureSequence = this.chooseController;
+	    this.scene.switch('MenuScene');
+	}
     }
 
     chooseController() {
@@ -27,7 +39,7 @@ export default class SettingsScene extends Phaser.Scene {
 		var buttonTotal = pad.getButtonTotal();
 		for(var y = 0; y < buttonTotal; y++) {
 		    if(pad.getButtonValue(y)) {
-			this.preActiveGamepads[x] = true;
+			this.preActivePads[x] = true;
 		    }
 		}
 	    }
@@ -255,17 +267,75 @@ export default class SettingsScene extends Phaser.Scene {
 	if(next) {
 	    this.message.destroy();
 	    this.configureSequence = this.awaitButtonReleased;
+	    this.releaseButton = this.jumpButton;
+	    this.releaseFunction = this.chooseBackButton;
+	}
+    }
+
+    chooseBackButton() {
+	this.message = this.add.image(this.cameras.main.centerX, this.cameras.main.centerY, 'choose_back');
+	this.preActiveButtons = [];
+	var buttonTotal = this.padToConfigure.getButtonTotal();
+	for(var x = 0; x < buttonTotal; x++) {
+	    if(this.padToConfigure.getButtonValue(x) != 0) {
+		this.preActiveButtons.push(true);
+	    } else {
+		this.preActiveButtons.push(false);
+	    }
+	}
+
+	this.activeButtons = [];
+	for(x = 0; x < buttonTotal; x++) {
+	    this.activeButtons.push(false);
+	}
+
+	this.buttonActivateTimes = [];
+	for(x = 0; x < buttonTotal; x++) {
+	    this.buttonActivateTimes.push(this.time.now);
+	}
+	
+	this.configureSequence = this.awaitBackButtonChoice;
+    }
+
+    awaitBackButtonChoice() {
+	var next = false;
+	var buttonTotal = this.padToConfigure.getButtonTotal();
+	for(var x = 0; x < buttonTotal; x++) {
+	    var button = this.padToConfigure.getButtonValue(x);
+	    if(button) {
+		if(!this.preActiveButtons[x]) {
+		    if(!this.activeButtons[x]) {
+			this.activeButtons[x] = true;
+			this.buttonActivateTimes[x] = this.time.now;
+		    } else if(this.time.now - this.buttonActivateTimes[x] > 1000) {
+			this.backButton = x;
+			next = true;
+		    }
+		}
+	    } else {
+		this.activeButtons[x] = false;
+		this.preActiveButtons[x] = false;
+	    }
+	}
+	if(next) {
+	    this.message.destroy();
+	    this.configureSequence = this.awaitButtonReleased;
+	    this.releaseButton = this.backButton;
+	    this.releaseFunction = this.reconstructControllerConfig;
 	}
     }
 
     awaitButtonReleased() {
-	if(!this.padToConfigure.getButtonValue(this.jumpButton)) {
-	    this.configureSequence = this.reconstructControllerConfig;
+	try {
+	    if(!this.padToConfigure.getButtonValue(this.releaseButton)) {
+		this.configureSequence = this.releaseFunction;
+	    }
 	}
+	catch (e) {}
     }
 
     reconstructControllerConfig() {
-	gamepadControlMappers[this.padNumber].rebind(this.eastAccelAxis, -this.northAccelAxis, this.eastJumpAxis, -this.northJumpAxis, this.jumpButton);
+	gamepadControlMappers[this.padNumber].rebind(this.eastAccelAxis, -this.northAccelAxis, this.eastJumpAxis, -this.northJumpAxis, this.jumpButton, this.backButton);
 	this.configureSequence = this.chooseController;
 	this.scene.switch('MenuScene');
     }

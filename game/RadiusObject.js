@@ -13,10 +13,10 @@ export default class RadiusObject extends Phaser.Physics.Arcade.Sprite {
     preUpdate() {
 	_.forEach(this.scene.players, (player, playerNumber) => {
 	    if(player) {
-		var dx = player.x - this.x;
-		var dy = player.y - this.y;
-		var rSq = dx*dx+dy*dy;
-		if(rSq*4 > this.radius*this.radius) {
+		player.dx = player.x - this.x;
+		player.dy = player.y - this.y;
+		player.rSq = player.dx*player.dx+player.dy*player.dy;
+		if(player.rSq*4 > this.radius*this.radius) {
 		    this.scene.respawn(playerNumber);
 		}
 	    }
