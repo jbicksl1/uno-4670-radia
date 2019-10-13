@@ -1,4 +1,4 @@
-import gamepadControlMappers from '/game/GamepadControlMapper.js';
+import gamepadControlMappers from './GamepadControlMapper.js';
 
 export default class MenuScene extends Phaser.Scene {
     preload() {

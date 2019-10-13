@@ -1,4 +1,4 @@
-import gamepadControlMappers from '/game/GamepadControlMapper.js';
+import gamepadControlMappers from './GamepadControlMapper.js';
 
 export default class SettingsScene extends Phaser.Scene {
     preload() {

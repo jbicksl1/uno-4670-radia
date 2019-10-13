@@ -1,14 +1,14 @@
-import PlayerObject from './game/PlayerObject.js';
-import RadiusObject from './game/RadiusObject.js';
-import GamepadPlayerController from './game/GamepadPlayerController.js';
-import gamepadControlMappers from './game/GamepadControlMapper.js';
+import PlayerObject from './PlayerObject.js';
+import RadiusObject from './RadiusObject.js';
+import GamepadPlayerController from './GamepadPlayerController.js';
+import gamepadControlMappers from './GamepadControlMapper.js';
 
 export default class GameScene extends Phaser.Scene {
     preload() {
-	this.load.image('player', '/assets/radia_player.png');
-	this.load.image('pellet', '/assets/radia_pellet.png');
-	this.load.image('radius', '/assets/radia_radius.png');
-	this.load.image('eliminated', '/assets/radia_eliminated.png');
+	this.load.image('player', '../assets/radia_player.png');
+	this.load.image('pellet', '../assets/radia_pellet.png');
+	this.load.image('radius', '../assets/radia_radius.png');
+	this.load.image('eliminated', '../assets/radia_eliminated.png');
     }
 
     create() {
