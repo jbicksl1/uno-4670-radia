@@ -9,6 +9,9 @@ export default class PlayerObject extends Phaser.Physics.Arcade.Sprite {
 	
 	this.controlStrategy = controlStrategy;
 
+	this.spawnTime = this.scene.time.now;
+	this.playerNumber = playerNumber;
+
 	this.lastThrustTime = this.scene.time.now;
 	
 	this.constructEmitter(scene);
@@ -94,5 +97,14 @@ export default class PlayerObject extends Phaser.Physics.Arcade.Sprite {
 	    this.body.setVelocity(thrustVector.x, thrustVector.y);
 	    this.lastThrustTime = this.scene.time.now;
 	}
+    }
+
+    takeDeathStatistic() {
+	var timeOfDeath = this.scene.time.now;
+	var lifeTimeMillis = timeOfDeath - this.spawnTime;
+	var lifeTime = lifeTimeMillis / 1000.0;
+	console.log("Death Report");
+	console.log(this.playerNumber);
+	console.log(lifeTime);
     }
 }

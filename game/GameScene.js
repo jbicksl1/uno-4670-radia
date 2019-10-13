@@ -65,6 +65,7 @@ export default class GameScene extends Phaser.Scene {
     respawn(playerNumber) {
 	var controller = this.players[playerNumber].controlStrategy;
 	this.players[playerNumber].emitter.explode(30);
+	this.players[playerNumber].takeDeathStatistic();
 	this.players[playerNumber].destroy();
 	if(this.playerCount > 1) {
 	    try {
