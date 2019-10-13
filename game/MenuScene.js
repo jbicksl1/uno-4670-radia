@@ -2,11 +2,11 @@ import gamepadControlMappers from './GamepadControlMapper.js';
 
 export default class MenuScene extends Phaser.Scene {
     preload() {
-	this.load.image('title_text', '../assets/radia_title_turret_road.png');
-	this.load.image('menu_new_game', '../assets/radia_menu_new_game.png');
-	this.load.image('menu_settings', '../assets/radia_menu_settings.png');
-	this.load.image('menu_credits', '../assets/radia_menu_credits.png');
-	this.load.image('controller_text', '../assets/radia_please_connect_controller.png');
+	this.load.image('title_text', './assets/radia_title_turret_road.png');
+	this.load.image('menu_new_game', './assets/radia_menu_new_game.png');
+	this.load.image('menu_settings', './assets/radia_menu_settings.png');
+	this.load.image('menu_credits', './assets/radia_menu_credits.png');
+	this.load.image('controller_text', './assets/radia_please_connect_controller.png');
     }
     
     create () {
