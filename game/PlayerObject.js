@@ -92,7 +92,7 @@ export default class PlayerObject extends Phaser.Physics.Arcade.Sprite {
     }
 
     thrust(vector) {
-	if(this.scene.time.now - this.lastThrustTime > 1000) {
+	if(this.scene.time.now - this.lastThrustTime > 3000) {
 	    var thrustVector = vector.normalize().scale(200);
 	    this.body.setVelocity(thrustVector.x, thrustVector.y);
 	    this.lastThrustTime = this.scene.time.now;
