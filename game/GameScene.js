@@ -132,7 +132,7 @@ export default class GameScene extends Phaser.Scene {
 	    body1.body.position).subtract(body2.body.position);
 	var diffMag = velocityDifference.dot(positionDifference)/
 	    positionDifference.dot(positionDifference);
-	positionDifference.scale(diffMag);
+	positionDifference.scale(diffMag*2.0);
 	body1.body.velocity.subtract(positionDifference);
 	body2.body.velocity.add(positionDifference);
     }
